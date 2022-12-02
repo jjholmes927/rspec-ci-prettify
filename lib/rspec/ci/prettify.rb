@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 require_relative "prettify/version"
+require_relative "prettify/formatter"
 
-module Rspec
+module RSpec
   module Ci
     module Prettify
-      class Error < StandardError; end
-      # Your code goes here...
     end
   end
 end

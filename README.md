@@ -1,4 +1,4 @@
-# Rspec::Ci::Prettify
+# RSpec::Ci::Prettify
 
 Hackathon project designed to make CI output for rspec runs (specifically using knapsack and Github actions) more easily digestable
 

@@ -17,37 +17,43 @@ module RSpec
         end
 
         def dump_summary(summary)
-          @output << RSpec::Ci::Prettify::Constants::SEPARATOR
-          @output << format_colour("\n\nSUMMARY:\n\t", :cyan)
+          @output << "\n\n"
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap(RSpec::Ci::Prettify::Constants::SEPARATOR, :bold_white)
+          @output << "\n\n"
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap("SUMMARY:", :cyan)
 
           build_summary(summary)
         end
 
         def dump_pending(notification)
-          @output << RSpec::Ci::Prettify::Constants::SEPARATOR
-          @output << format_colour("\n\nPENDING:\n\t", :pending)
+          @output << "\n\n"
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap(RSpec::Ci::Prettify::Constants::SEPARATOR, :bold_white)
+          @output << "\n\n"
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap("PENDING:", :pending)
+          @output << "\n\n\t"
 
           @output << notification.pending_examples.map do |example|
-            format_colour(format_example_summary(example), :pending)
+            RSpec::Core::Formatters::ConsoleCodes.wrap(format_example_summary(example), :pending)
           end.join("\n\t")
         end
 
         def dump_failures(notification)
-          @output << RSpec::Ci::Prettify::Constants::SEPARATOR
-          @output << format_colour("\n\nFAILURES:\n\t", :failure)
+          @output << "\n\n"
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap(RSpec::Ci::Prettify::Constants::SEPARATOR, :bold_white)
+          @output << "\n\n"
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap("FAILURES:", :failure)
+          @output << "\n\n\t"
           @output << failed_examples_output(notification)
         end
 
         def example_passed(example)
-          # @output << RSpec::Core::Formatters::ConsoleCodes.wrap(".", :success)
+
         end
 
         def example_failed(example)
-          # @output << RSpec::Core::Formatters::ConsoleCodes.wrap("F", :failure)
         end
 
         def example_pending(example)
-          # @output << RSpec::Core::Formatters::ConsoleCodes.wrap("*", :pending)
         end
 
         def close(_notification)
@@ -63,44 +69,48 @@ module RSpec
 
           failure_count = summary.failed_examples.count
           pass_count = total_tests_ran - failure_count
-
+          @output << "\n"
           @output << build_test_suite_duration(summary, total_tests_ran)
+          @output << "\n"
           @output << build_pending_summary(pending_count, total_test_count)
 
           if pass_count == total_tests_ran
-            @output << format_colour("\n All #{total_tests_ran} tests ran passed!!!", :magenta)
+            @output << "\n"
+            @output << RSpec::Core::Formatters::ConsoleCodes.wrap("All #{total_tests_ran} tests ran passed!!!", :magenta)
             return
           end
-
+          @output << "\n"
           @output << build_failure_summary(failure_count, total_tests_ran)
+          @output << "\n"
           @output << build_pass_summary(pass_count, total_tests_ran)
+          @output << "\n"
         end
 
         def build_test_suite_duration(summary, test_run_count)
           duration = RSpec::Core::Formatters::Helpers.format_duration(summary.duration)
-          duration_text = "\nRan #{test_run_count} tests overall in #{duration}."
+          duration_text = "Ran #{test_run_count} tests overall in #{duration}."
 
-          format_colour(duration_text, :cyan)
+          RSpec::Core::Formatters::ConsoleCodes.wrap(duration_text, :cyan)
         end
 
         def build_pending_summary(pending_count, total_test_count)
           pending_percentage = percentage_of_examples(pending_count, total_test_count)
-          pending_summary = "\n #{pending_percentage} of tests skipped/pending (#{pending_count})"
-          indent(format_colour(pending_summary, :pending), 4)
+
+          pending_summary = "#{pending_percentage} of tests skipped/pending (#{pending_count})"
+          indent(RSpec::Core::Formatters::ConsoleCodes.wrap(pending_summary, :pending), 4)
         end
 
         def build_failure_summary(failure_count, total_tests_ran)
           failure_percentage = percentage_of_examples(failure_count, total_tests_ran)
-          failure_summary = "\n #{failure_percentage} of tests failed (#{failure_count})"
-          indent(format_colour(failure_summary, :failure), 4)
+          failure_summary = "#{failure_percentage} of tests failed (#{failure_count})"
+          indent(RSpec::Core::Formatters::ConsoleCodes.wrap(failure_summary, :failure), 4)
         end
 
         def build_pass_summary(pass_count, total_tests_ran)
           pass_percentage = percentage_of_examples(pass_count, total_tests_ran)
+          pass_summary = "#{pass_percentage} of tests passed (#{pass_count})"
 
-          pass_summary = "\n #{pass_percentage} of tests passed (#{pass_count})"
-
-          indent(format_colour(pass_summary, :success), 4)
+          indent(RSpec::Core::Formatters::ConsoleCodes.wrap(pass_summary, :success), 4)
         end
 
         def percentage_of_examples(count, total)
@@ -120,10 +130,6 @@ module RSpec
           output.join("\n\n\t")
         end
 
-        def format_colour(str, status)
-          RSpec::Core::Formatters::ConsoleCodes.wrap(str, status)
-        end
-
         def format_example_summary(example)
           full_description = example.full_description
           location = example.location
@@ -132,8 +138,9 @@ module RSpec
 
         def failed_example_output(example)
           msg = example.execution_result.exception.message
-          formatted_err_message = sanitize_msg(msg)
-          summary = format_colour(format_example_summary(example), :failure)
+          sanitized_err_message = sanitize_msg(msg)
+          formatted_err_message = RSpec::Core::Formatters::ConsoleCodes.wrap(sanitized_err_message, :failure)
+          summary = RSpec::Core::Formatters::ConsoleCodes.wrap(format_example_summary(example), :failure)
 
           "#{summary} \n  #{formatted_err_message}"
         end

@@ -4,7 +4,7 @@ module RSpec
   module Ci
     module Prettify
       module Constants
-        SEPARATOR = "\n\n#{'-' * 55}"
+        SEPARATOR = "#{'-' * 55}"
       end
     end
   end

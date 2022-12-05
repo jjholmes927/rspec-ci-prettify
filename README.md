@@ -30,6 +30,10 @@ example
 rspec --force-color --format RSpec::Ci::Prettify::Formatter
 ```
 
+Screenshot of formatter output (Can also be seen on the repos github actions on master)
+
+<img width="1505" alt="Screenshot 2022-12-05 at 17 46 31" src="https://user-images.githubusercontent.com/76173161/205706328-44bc387c-03cc-4112-a78a-c937557d6bf3.png">
+
 ## Development
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).

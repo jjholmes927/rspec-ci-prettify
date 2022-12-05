@@ -142,7 +142,7 @@ module RSpec
           formatted_err_message = RSpec::Core::Formatters::ConsoleCodes.wrap(sanitized_err_message, :failure)
           summary = RSpec::Core::Formatters::ConsoleCodes.wrap(format_example_summary(example), :failure)
 
-          "#{summary} \n  #{formatted_err_message}"
+          "#{summary} \n  #{formatted_err_message} \n"
         end
 
         def sanitize_msg(msg)

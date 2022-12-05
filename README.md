@@ -20,11 +20,14 @@ Or install it yourself as:
 
 ## Usage
 
-Run rspec with the formatter flag set
+Run rspec with the formatter flag set to the gems formatter
+
+and --force-color which will set the RSpec.configuration.color_enabled? to be always true so ANSI Console code
+colour wraps are used properly 
 
 example
-```ruby
-rspec --format RSpec::Ci::Prettify::Formatter
+```
+rspec --force-color --format RSpec::Ci::Prettify::Formatter
 ```
 
 ## Development

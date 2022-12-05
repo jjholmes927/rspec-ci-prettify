@@ -36,4 +36,4 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
       shell: bash
-      run: bundle exec rspec ./spec/
+      run: bundle exec rspec --format RSpec::Ci::Prettify::Formatter ./spec/

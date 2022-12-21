@@ -4,6 +4,7 @@ require 'rspec/core'
 require 'rspec/core/formatters/base_formatter'
 require 'rspec/core/formatters/console_codes'
 require_relative 'constants'
+require_relative 'annotation'
 
 module RSpec
   module Ci
@@ -20,7 +21,7 @@ module RSpec
           @output << "\n\n"
           @output << RSpec::Core::Formatters::ConsoleCodes.wrap(RSpec::Ci::Prettify::Constants::SEPARATOR, :bold_white)
           @output << "\n\n"
-          @output << RSpec::Core::Formatters::ConsoleCodes.wrap("SUMMARY:", :cyan)
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap('SUMMARY:', :cyan)
 
           build_summary(summary)
         end
@@ -29,7 +30,7 @@ module RSpec
           @output << "\n\n"
           @output << RSpec::Core::Formatters::ConsoleCodes.wrap(RSpec::Ci::Prettify::Constants::SEPARATOR, :bold_white)
           @output << "\n\n"
-          @output << RSpec::Core::Formatters::ConsoleCodes.wrap("PENDING:", :pending)
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap('PENDING:', :pending)
           @output << "\n\n\t"
 
           @output << notification.pending_examples.map do |example|
@@ -41,20 +42,19 @@ module RSpec
           @output << "\n\n"
           @output << RSpec::Core::Formatters::ConsoleCodes.wrap(RSpec::Ci::Prettify::Constants::SEPARATOR, :bold_white)
           @output << "\n\n"
-          @output << RSpec::Core::Formatters::ConsoleCodes.wrap("FAILURES:", :failure)
+          @output << RSpec::Core::Formatters::ConsoleCodes.wrap('FAILURES:', :failure)
           @output << "\n\n\t"
           @output << failed_examples_output(notification)
         end
 
-        def example_passed(example)
-
+        def example_failed(notification)
+          annotation = RSpec::Ci::Prettify::Annotation.new(notification)
+          output << "\n::error file=#{annotation.file},line=#{annotation.line}::#{annotation.error}"
         end
 
-        def example_failed(example)
-        end
+        def example_passed(_example); end
 
-        def example_pending(example)
-        end
+        def example_pending(_example); end
 
         def close(_notification)
           @output << "\n"
@@ -76,7 +76,8 @@ module RSpec
 
           if pass_count == total_tests_ran
             @output << "\n"
-            @output << RSpec::Core::Formatters::ConsoleCodes.wrap("All #{total_tests_ran} tests ran passed!!!", :magenta)
+            @output << RSpec::Core::Formatters::ConsoleCodes.wrap("All #{total_tests_ran} tests ran passed!!!",
+                                                                  :magenta)
             return
           end
           @output << "\n"
